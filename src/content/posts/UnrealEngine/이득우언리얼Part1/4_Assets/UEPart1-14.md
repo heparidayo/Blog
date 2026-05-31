@@ -5,7 +5,7 @@ description: 'UPackage를 이용한 에셋 저장과 LoadObject, FStreamableMana
 image: '' 
 tags: [Unreal Engine, C++]
 category: 'Unreal Engine'
-draft: false 
+draft: true 
 lang: 'ko'
 ---
 
@@ -303,53 +303,3 @@ UMyGameInstance::UMyGameInstance()
     - **비동기 로딩:** `StreamableManager` (백그라운드 로딩, 대규모 게임 필수).
 
 ---
-
-# 6. AI 생성 챕터 질문
-
-이 단원을 제대로 이해했는지 확인해보세요. 모든 질문에 망설임 없이 답할 수 있다면 다음 단계로 넘어가셔도 좋습니다.
-
-**Q1. 언리얼 에디터의 콘텐츠 브라우저에서 보이는 '에셋(Asset)'과 이를 감싸는 '패키지(Package)'의 일반적인 관계는 무엇입니까?**
-<details>
-<summary>정답 확인 (클릭)</summary>
-<div markdown="1">
-1개의 패키지(`UPackage`)에 1개의 메인 에셋이 들어가는 것이 일반적입니다.
-패키지는 다수의 오브젝트를 포함할 수 있는 상위 개념이며, 그중 에디터에 노출되는 주요 오브젝트를 '에셋'이라고 부릅니다.
-</div>
-</details>
-
-<br>
-
-**Q2. 패키지 경로가 `/Game/MyFolder/MyData`이고 에셋 이름이 `HeroData`일 때, 이 에셋을 로드하기 위한 고유한 '오브젝트 패스(Object Path)' 문자열은 무엇입니까?**
-<details>
-<summary>정답 확인 (클릭)</summary>
-<div markdown="1">
-`/Game/MyFolder/MyData.HeroData`
-패키지 이름과 에셋 이름을 마침표(`.`)로 연결한 형태입니다. 이 유일한 경로를 Key로 사용하여 에셋을 찾거나 로드합니다.
-</div>
-</details>
-
-<br>
-
-**Q3. 다음 상황에 적절한 에셋 로딩 방식(함수/클래스)을 연결해 보세요.**
-1. C++ 클래스 **생성자**에서 미리 에셋을 로딩할 때
-2. 게임 **실행 중(런타임)** 에 즉시 필요한 에셋을 로딩할 때 (동기)
-3. 게임 실행 중 렉을 방지하기 위해 **백그라운드**에서 로딩할 때 (비동기)
-
-<details>
-<summary>정답 확인 (클릭)</summary>
-<div markdown="1">
-1. `ConstructorHelpers::FObjectFinder` (생성자 단계)   
-2. `LoadObject<T>` (런타임 동기 로딩)   
-3. `FStreamableManager` (런타임 비동기 로딩)
-</div>
-</details>
-
-<br>
-
-**Q4. 게임 플레이 도중 `LoadObject`를 사용하여 거대한 에셋을 로딩하면 어떤 문제가 발생할 수 있으며, 이를 해결하기 위한 방법은 무엇입니까?**
-<details>
-<summary>정답 확인 (클릭)</summary>
-<div markdown="1">
-프레임 드랍(렉)이 발생할 수 있습니다. `LoadObject`는 로딩이 끝날 때까지 메인 스레드를 멈추기 때문입니다. 이를 해결하기 위해 `StreamableManager`를 사용한 비동기 로딩(Async Load)을 사용하여 백그라운드에서 로딩해야 합니다.
-</div>
-</details>
