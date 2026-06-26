@@ -3,7 +3,7 @@ title: '[PCG] 1. C++ 콘솔 기반 BSP 알고리즘 테스트'
 published: 2026-03-24
 description: '언리얼 엔진 도입 전, C++ 콘솔 환경에서 BSP 알고리즘을 활용한 공간 분할 및 생성 로직을 테스트해보자'
 image: '' 
-tags: [Unreal Engine, C++, PCG, Algorithm]
+tags: [Unreal Engine, C++, PCG, Algorithm, BSP]
 category: 'PCG'
 draft: false 
 lang: 'ko'

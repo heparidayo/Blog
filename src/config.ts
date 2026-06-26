@@ -17,6 +17,7 @@ export const siteConfig: SiteConfig = {
 	banner: {
 		enable: true,
 		// gif 로딩 너무 느려~
+		// TODO: avif 이미지 포맷으로 교체하면 될듯
 		// src: "assets/images/gifRos6sLoop.gif", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 		src: "assets/images/rosmontis_confront.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
@@ -28,7 +29,7 @@ export const siteConfig: SiteConfig = {
 	},
 	toc: {
 		enable: true, // Display the table of contents on the right side of the post
-		depth: 2, // Maximum heading depth to show in the table, from 1 to 3
+		depth: 3, // Maximum heading depth to show in the table, from 1 to 3
 	},
 	favicon: [
 		// Leave this array empty to use the default favicon
