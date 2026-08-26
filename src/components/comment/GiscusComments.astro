@@ -1,0 +1,135 @@
+---
+import { Icon } from "astro-icon/components";
+import { commentConfig } from "../../config/comments";
+import I18nKey from "../../i18n/i18nKey";
+import { i18n } from "../../i18n/translation";
+
+const isConfigured = [
+	commentConfig.repo,
+	commentConfig.repoId,
+	commentConfig.category,
+	commentConfig.categoryId,
+].every((value) => value.trim().length > 0);
+
+const shouldRender =
+	commentConfig.enabled && (isConfigured || import.meta.env.DEV);
+---
+
+{shouldRender && (
+	<section
+		id="comments"
+		aria-labelledby="comments-title"
+		data-pagefind-ignore
+		class="card-base mb-4 rounded-[var(--radius-large)] px-6 py-6 md:px-9"
+	>
+		<div class="mb-5 flex items-center gap-3">
+			<div class="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--btn-regular-bg)] text-[var(--primary)]">
+				<Icon name="material-symbols:chat-bubble-outline-rounded" class="text-xl" />
+			</div>
+			<h2 id="comments-title" class="text-xl font-bold text-black/90 dark:text-white/90">
+				{i18n(I18nKey.comments)}
+			</h2>
+		</div>
+
+		{isConfigured ? (
+			<giscus-comments
+				data-repo={commentConfig.repo}
+				data-repo-id={commentConfig.repoId}
+				data-category={commentConfig.category}
+				data-category-id={commentConfig.categoryId}
+				data-mapping={commentConfig.mapping}
+				data-strict={commentConfig.strict ? "1" : "0"}
+				data-reactions-enabled={commentConfig.reactionsEnabled ? "1" : "0"}
+				data-input-position={commentConfig.inputPosition}
+				data-lang={commentConfig.lang}
+			>
+				<div class="giscus min-h-32"></div>
+			</giscus-comments>
+		) : (
+			<p class="rounded-xl border border-dashed border-[var(--line-divider)] px-4 py-3 text-sm text-black/50 dark:text-white/50">
+				GitHub Discussions와 giscus App을 연결한 뒤 comments.ts의 categoryId를 입력하면 댓글이 활성화됩니다.
+			</p>
+		)}
+	</section>
+)}
+
+<script>
+	class GiscusComments extends HTMLElement {
+		private themeObserver: MutationObserver | undefined;
+
+		connectedCallback() {
+			if (this.dataset.initialized === "true") return;
+
+			this.dataset.initialized = "true";
+			this.loadGiscus();
+
+			this.themeObserver = new MutationObserver(() => this.updateTheme());
+			this.themeObserver.observe(document.documentElement, {
+				attributes: true,
+				attributeFilter: ["class"],
+			});
+		}
+
+		disconnectedCallback() {
+			this.themeObserver?.disconnect();
+		}
+
+		private getTheme() {
+			return document.documentElement.classList.contains("dark")
+				? "transparent_dark"
+				: "light";
+		}
+
+		private loadGiscus() {
+			const mount = this.querySelector<HTMLElement>(".giscus");
+			if (!mount || mount.querySelector("script, iframe")) return;
+
+			const script = document.createElement("script");
+			script.src = "https://giscus.app/client.js";
+			script.async = true;
+			script.crossOrigin = "anonymous";
+			script.dataset.repo = this.dataset.repo ?? "";
+			script.dataset.repoId = this.dataset.repoId ?? "";
+			script.dataset.category = this.dataset.category ?? "";
+			script.dataset.categoryId = this.dataset.categoryId ?? "";
+			script.dataset.mapping = this.dataset.mapping ?? "pathname";
+			script.dataset.strict = this.dataset.strict ?? "1";
+			script.dataset.reactionsEnabled = this.dataset.reactionsEnabled ?? "1";
+			script.dataset.emitMetadata = "0";
+			script.dataset.inputPosition = this.dataset.inputPosition ?? "top";
+			script.dataset.theme = this.getTheme();
+			script.dataset.lang = this.dataset.lang ?? "ko";
+			script.dataset.loading = "lazy";
+
+			mount.appendChild(script);
+		}
+
+		private updateTheme() {
+			const iframe = this.querySelector<HTMLIFrameElement>("iframe.giscus-frame");
+			iframe?.contentWindow?.postMessage(
+				{
+					giscus: {
+						setConfig: { theme: this.getTheme() },
+					},
+				},
+				"https://giscus.app",
+			);
+		}
+	}
+
+	if (!customElements.get("giscus-comments")) {
+		customElements.define("giscus-comments", GiscusComments);
+	}
+</script>
+
+<style>
+	giscus-comments {
+		display: block;
+		width: 100%;
+	}
+
+	:global(.giscus),
+	:global(.giscus-frame) {
+		width: 100%;
+	}
+</style>
