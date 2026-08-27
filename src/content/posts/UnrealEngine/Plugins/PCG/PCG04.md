@@ -3,7 +3,7 @@ title: '[PCG] 4. HISM 기반 3D 렌더링 및 은면 제거'
 published: 2026-06-23
 description: 'n만 개의 타일 데이터를 HISM으로 압축하여 드로우콜을 최적화하고, 불필요한 벽 메쉬 생성을 막는 은면 제거(Culling) 로직을 구현하자'
 image: '' 
-tags: [Unreal Engine, C++, PCG, O
+tags: [Unreal Engine, C++, PCG, Opt.]
 category: 'PCG'
 draft: false 
 lang: 'ko'
