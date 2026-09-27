@@ -9,7 +9,7 @@ draft: false
 lang: 'ko'
 ---
 
-지난 5월, 2D Grid 배열을 활용하여 방+복도 데이터를 메모리에 올렸다. 하지만 지금까지 뷰포트에 띄운 `DrawDebugSolidBox`는 실제 게임에서 사용할 수 없는 에디터 전용 시각화 도구이다.
+지난 5월, 2D Grid 배열을 활용하여 방+복도 데이터를 메모리에 올렸다. 하지만 지금까지 뷰포트에 띄운 `DrawDebugSolidBox`는 실제 게임에서 사용할 수 없는 에디터 전용 시각화 도구다.
 
 이번에는 이 n만 개의 데이터 배열을 바탕으로 실제 3D Static Mesh를 월드에 배치하되, Draw Call 문제를 방지하기 위해 `HISM` 컴포넌트와 은면 제거 알고리즘을 도입하여 렌더링을 최적화해 보았다.
 
@@ -21,7 +21,7 @@ CPU는 GPU에게 "1번 큐브 그려라", "2번 큐브 그려라" 하며 1만 �
 
 ## 2. HISM을 활용한 하드웨어 인스턴싱
 
-이를 해결하기 위해 **HISM(Hierarchical Instanced Static Mesh)** 컴포넌트를 사용했다. HISM은 동일한 메쉬 1만 개를 그릴 때, 메쉬 원본 데이터 1개와 1만 개의 좌표(Transform) 배열만 GPU로 넘겨 **단 1회의 드로우콜**로 렌더링을 끝내는 최적화 기법이다. 
+언리얼에는 `HISM(Hierarchical Instanced Static Mesh)` 컴포넌트로 위 문제를 해결 가능하다. HISM은 지금처럼 동일한 메쉬 1만개를 그릴 때, 메쉬 원본 데이터 1개 + 1만개의 좌표 (Trnasform 배열)만 GPU로 넘겨 Draw Call 을 1회만 발생시키는 최적화 기법이다.
 
 - `ISM`과 달리 계층적(Hierarchical) 구조를 가져, 시야 밖의 인스턴스를 통째로 Frustum Culling하거나 거리별 LOD 적용이 가능하다는 장점이 있어 거대 맵 생성에 유용하다.
 
@@ -41,9 +41,7 @@ RoomFloorHISM->ClearInstances();
 
 ## 4. 인접 타일 검사를 통한 은면 제거 (Culling)
 
-1만 개의 타일 중, 플레이어가 걸어 다니는 방과 복도를 제외한 7~8천 개의 잉여 타일은 그냥 두툼한 벽으로 남는다. 이 벽 타일마다 모두 메쉬를 생성하면 보이지 않는 맵 외곽과 땅속 허공까지 수천 개의 큐브가 렌더링되는 메모리 낭비가 발생한다.
-
-따라서 **"상하좌우 4방향 중 바닥이 단 하나라도 있는 벽(노출된 벽)만 렌더링한다"**는 은면 제거(Hidden Surface Removal) 로직을 추가했다.
+1만 개의 타일 중, 플레이어가 걸어 다니는 방과 복도를 제외한 7~8천 개의 잉여 타일은 그냥 두툼한 벽으로 남는다. 이 벽 타일마다 모두 메쉬를 생성하면 보이지 않는 맵 외곽과 땅속까지 모두 렌더링되는 낭비가 발생한다. 
 
 ```cpp
 bool bShouldRenderWall = false;
@@ -73,6 +71,9 @@ if (bShouldRenderWall)
     WallHISM->AddInstance(WallTransform);
 }
 ```
+
+플레이어에게 노출되는 벽만 렌더링 하도록 4방향을 검사해 렌더링을 승인해주는 은면 제거 (Hidden Surface Removal) 로직을 추가했다.
+
 
 ## 5. 결과 시각화 및 다음 목표
 ![alt text](image-6.png)
