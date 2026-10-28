@@ -9,7 +9,7 @@ draft: false
 lang: ''
 ---
 
-![PathCore_Main](image.png)
+![PathCore_Main](image.png)`
 
 ![alt text](image-1.png)
 ![alt text](image-3.png)
@@ -18,3 +18,4 @@ lang: ''
 ![alt text](image-2.png)
 ![alt text](image-4.png)
 ![alt text](image-6.png)
+
