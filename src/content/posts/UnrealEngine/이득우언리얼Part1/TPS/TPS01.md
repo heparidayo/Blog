@@ -1,6 +1,6 @@
 ---
 title: '[UE5] 0-1. 개발 환경 구축부터 네트워크 세션 기초 설계까지'
-published: 2026-04-03
+published: 2026-02-15
 description: '(이전 게시글 0번 1번 통합) UE5.7 기준 데디케이티드 서버, GAS, Enhanced Input 환경 구축과 세션 기반 네트워크 연결 테스트 통합 정리'
 image: ''
 tags: [Unreal Engine, C++, GAS]
